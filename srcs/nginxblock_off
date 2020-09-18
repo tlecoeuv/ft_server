@@ -1,0 +1,29 @@
+server {
+	listen 80;
+	listen 443 ssl;
+	root /var/www;
+
+	ssl on;
+	ssl_certificate      /etc/ssl/certs/nginx-selfsigned.crt;
+	ssl_certificate_key  /etc/ssl/private/nginx-selfsigned.key;
+	ssl_protocols        SSLv3 TLSv1;
+	ssl_ciphers          HIGH:!aNULL:!MD5;
+
+	server_name localhost;
+
+	index index.php index.html index.htm;
+
+	location / {
+        autoindex off;
+    }
+	location /wordpress {
+		alias /var/www/wordpress;
+	}
+	location /phpmyadmin {
+		alias /var/www/phpmyadmin;
+	}
+	location ~ \.php$ {
+        include snippets/fastcgi-php.conf;
+        fastcgi_pass unix:/run/php/php7.3-fpm.sock;
+    }
+}
